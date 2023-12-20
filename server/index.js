@@ -9,7 +9,15 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import authRouthes from './routes/auth.js';
+import usersRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
 import { register } from './controllers/auth.js';
+import { createPost } from './controllers/posts.js';
+import { verifyToken } from './middleware/auth.js';
+
+import User from './models/User.js';
+import Post from './models/Post.js';
+import { users, posts } from './data/index.js';
 
 // Configurations
 const __filename = fileURLToPath(import.meta.url);
@@ -45,9 +53,13 @@ const upload = multer({ storage });
 // Routes with files
 // this is middleware function, the register function is a controller
 app.post('/auth/register', upload.single("picture"), register);
+app.post("/posts", verifyToken, upload.single("picture"), createPost)
+
 
 // Routes
 app.use('/auth', authRouthes);
+app.use("/users", usersRoutes);
+app.use("/posts", postRoutes);
 
 // Mongoose setup
 
@@ -55,6 +67,11 @@ const PORT = process.env.PORT || 6001;
 mongoose.connect(process.env.MONGO_URL, { 
   useNewUrlParser: true, 
   useUnifiedTopology: true 
-}).then(() => 
-  app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)
-)).catch((error) => console.log(error.message));
+}).then(() => {
+  app.listen(PORT, () => console.log(`Server running on port: ${PORT}`))
+
+  // add data once
+  // User.insertMany(users)
+  // Post.insertMany(posts)
+
+}).catch((error) => console.log(error.message));
