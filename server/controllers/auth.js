@@ -47,7 +47,6 @@ export const register = async (req, res) => {
 // Logging in
 
 export const login = async (req, res) => {
-  console.log("We're calling login on server rn")
   try {
     const {email, password} = req.body;
     const user = await User.findOne({email: email});

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-// next allows us to have the function "continue"
+// next allows us to have the function "continue" 
 export const verifyToken = (req, res, next) => {
   try {
     let token = req.header("Authorization");
